@@ -15,7 +15,7 @@ export class User {
   @Prop({ required: true })
   name!: string;
 
-  @Prop({ required: false })
+  @Prop()
   contactPhone?: string;
 
   @Prop({ required: true, default: ERole.Client })

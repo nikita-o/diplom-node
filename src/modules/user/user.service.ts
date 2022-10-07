@@ -1,15 +1,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../../database/schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { SearchUsersDto } from './dto/search-users.dto';
+import { UtilService } from '../../common/utils/util.service';
+import { IUserService } from './interfaces/user-service.interface';
+import { ISearchUserParams } from './interfaces/search-user-params.interface';
 
 @Injectable()
-export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+export class UserService implements IUserService {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private util: UtilService,
+  ) {}
 
-  create(data: CreateUserDto): Promise<User> {
+  create(data: Partial<User>): Promise<User> {
     return this.userModel.create(data);
   }
 
@@ -29,7 +33,7 @@ export class UserService {
     return user;
   }
 
-  findAll(params: SearchUsersDto): Promise<User[]> {
+  findAll(params: ISearchUserParams): Promise<User[]> {
     return this.userModel
       .find({
         email: params.email,
