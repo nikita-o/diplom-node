@@ -1,4 +1,6 @@
 export enum ERole {
   Admin,
-  User,
+  Client,
+  Manager,
+  User, // TODO: Потом убрать
 }

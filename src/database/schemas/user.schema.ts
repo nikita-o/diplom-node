@@ -6,11 +6,19 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop()
-  username!: string;
-  @Prop()
+  @Prop({ required: true, unique: true })
+  email!: string;
+
+  @Prop({ required: true })
   passwordHash!: string;
-  @Prop()
+
+  @Prop({ required: true })
+  name!: string;
+
+  @Prop({ required: false })
+  contactPhone?: string;
+
+  @Prop({ required: true, default: ERole.Client })
   role!: ERole;
 }
 
