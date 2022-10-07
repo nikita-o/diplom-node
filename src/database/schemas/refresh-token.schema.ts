@@ -2,8 +2,6 @@ import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from './user.schema';
 
-export type RefreshTokenDocument = RefreshToken & Document;
-
 @Schema()
 export class RefreshToken {
   @Prop()
@@ -21,5 +19,7 @@ export class RefreshToken {
   })
   user!: User;
 }
+
+export type RefreshTokenDocument = RefreshToken & Document;
 
 export const RefreshTokenSchema = SchemaFactory.createForClass(RefreshToken);

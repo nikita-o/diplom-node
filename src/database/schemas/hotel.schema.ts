@@ -1,8 +1,6 @@
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type HotelDocument = Hotel & Document;
-
 @Schema({ timestamps: true })
 export class Hotel {
   @Prop({ required: true })
@@ -11,5 +9,7 @@ export class Hotel {
   @Prop()
   description?: string;
 }
+
+export type HotelDocument = Hotel & Document;
 
 export const HotelSchema = SchemaFactory.createForClass(Hotel);
