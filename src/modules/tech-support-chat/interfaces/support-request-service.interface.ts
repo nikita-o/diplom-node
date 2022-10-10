@@ -9,5 +9,5 @@ export interface ISupportRequestService {
   getMessages(supportRequestId: string): Promise<Message[]>;
   subscribe(
     handler: (supportRequest: SupportRequest, message: Message) => void,
-  ): () => void;
+  ): void;
 }

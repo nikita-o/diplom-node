@@ -12,9 +12,12 @@ import {
 import { ISendMessage } from './interfaces/send-message.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { EventEmitter } from 'events';
 
 @Injectable()
 export class SupportRequestService implements ISupportRequestService {
+  private sendMessageEvent: EventEmitter = new EventEmitter();
+
   constructor(
     @InjectModel(SupportRequest.name)
     private supportRequestModel: Model<SupportRequestDocument>,
@@ -54,13 +57,20 @@ export class SupportRequestService implements ISupportRequestService {
     await message.save();
     supportRequest.messages.push(message);
     await supportRequest.save();
+    this.sendMessageEvent.emit('send-message', {
+      supportRequest,
+      message,
+    });
     return message;
   }
 
-  // FIXME: тут пока хз че надо
   subscribe(
     handler: (supportRequest: SupportRequest, message: Message) => void,
-  ): () => void {
-    return function () {};
+  ): void {
+    this.sendMessageEvent.on(
+      'send-message',
+      (supportRequest: SupportRequest, message: Message) =>
+        handler(supportRequest, message),
+    );
   }
 }
