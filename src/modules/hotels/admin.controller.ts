@@ -51,7 +51,7 @@ export class AdminController {
   ): Promise<HotelRoom> {
     return await this.hotelRoomService.create({
       description: data.description,
-      hotel: data.hotelId,
+      hotel: data.hotelId as unknown as Hotel, // FIXME: кринж
       images: photos.map((file: Express.Multer.File) => file.path),
     });
   }
@@ -66,7 +66,7 @@ export class AdminController {
       images: photos?.map((file: Express.Multer.File) => file.path),
       isEnabled: data.isEnabled,
       description: data.description,
-      hotel: data.hotelId,
+      hotel: data.hotelId as unknown as Hotel, // FIXME: кринж
     });
   }
 }
