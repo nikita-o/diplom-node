@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ISupportRequestService } from './interfaces/support-request-service.interface';
-import { IGetChatListParams } from './interfaces/get-chat-list-params.interface';
+import { ISupportRequestService } from '../interfaces/support-request-service.interface';
+import { IGetChatListParams } from '../interfaces/get-chat-list-params.interface';
 import {
   SupportRequest,
   SupportRequestDocument,
-} from '../../database/schemas/support-request.schema';
+} from '../../../database/schemas/support-request.schema';
 import {
   Message,
   MessageDocument,
-} from '../../database/schemas/message.schema';
-import { ISendMessage } from './interfaces/send-message.interface';
+} from '../../../database/schemas/message.schema';
+import { ISendMessage } from '../interfaces/send-message.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EventEmitter } from 'events';

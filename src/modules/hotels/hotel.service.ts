@@ -3,6 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Hotel, HotelDocument } from '../../database/schemas/hotel.schema';
 import { IHotelService } from './interfaces/hotel-service.interface';
+import { AddHotelDto } from './dto/add-hotel.dto';
+import { GetHotelsDto } from './dto/get-hotels.dto';
+import { UpdateHotelDto } from './dto/updateHotel.dto';
 
 @Injectable()
 export class HotelService implements IHotelService {
@@ -10,7 +13,7 @@ export class HotelService implements IHotelService {
     @InjectModel(Hotel.name) private hotelModel: Model<HotelDocument>,
   ) {}
 
-  create(data: any): Promise<Hotel> {
+  create(data: AddHotelDto): Promise<Hotel> {
     return this.hotelModel.create(data);
   }
 
@@ -24,5 +27,23 @@ export class HotelService implements IHotelService {
 
   search(params: Pick<Hotel, 'title'>): Promise<Hotel[]> {
     return this.hotelModel.find({ title: params.title }).exec();
+  }
+
+  getListHotels(params: GetHotelsDto): Promise<Hotel[]> {
+    return this.hotelModel
+      .find()
+      .skip(params.offset)
+      .limit(params.limit)
+      .exec();
+  }
+
+  async updateHotel(id: string, data: UpdateHotelDto): Promise<Hotel> {
+    const hotel: Hotel | null = await this.hotelModel
+      .findByIdAndUpdate(id, data)
+      .exec();
+    if (!hotel) {
+      throw new BadRequestException('No Hotel');
+    }
+    return hotel;
   }
 }

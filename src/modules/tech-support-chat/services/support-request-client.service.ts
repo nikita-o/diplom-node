@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ISupportRequestClientService } from './interfaces/support-request-client-service.interface';
+import { ISupportRequestClientService } from '../interfaces/support-request-client-service.interface';
 import {
   SupportRequest,
   SupportRequestDocument,
-} from '../../database/schemas/support-request.schema';
-import { ICreateSupportRequest } from './interfaces/create-support-request.interface';
+} from '../../../database/schemas/support-request.schema';
+import { ICreateSupportRequest } from '../interfaces/create-support-request.interface';
 import {
   Message,
   MessageDocument,
-} from '../../database/schemas/message.schema';
-import { IMarkMessagesAsRead } from './interfaces/mark-messages-as-read.interface';
+} from '../../../database/schemas/message.schema';
+import { IMarkMessagesAsRead } from '../interfaces/mark-messages-as-read.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
