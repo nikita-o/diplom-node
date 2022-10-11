@@ -1,10 +1,18 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
 import { Reservation } from '../../database/schemas/reservation.schema';
 import { ReservationService } from './reservation.service';
 import { User } from '../../database/schemas/user.schema';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { ERole } from '../../common/enums/role.enum';
+import { AuthenticatedGuard } from '../../auth/guards/auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('reservation')
 @Controller('manager/reservations')
-export class ClientController {
+@Roles(ERole.Manager)
+@UseGuards(AuthenticatedGuard, RolesGuard)
+export class ManagerController {
   constructor(private reservationService: ReservationService) {}
 
   @Get(':userId')

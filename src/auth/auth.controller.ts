@@ -5,7 +5,9 @@ import { User, UserDocument } from '../database/schemas/user.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LocalLoginGuard } from './guards/local-login.guard';
 import { AuthenticatedGuard } from './guards/auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -23,6 +25,7 @@ export class AuthController {
   }
 
   @Post('auth/logout')
+  @UseGuards(AuthenticatedGuard)
   logout(@Req() req: any): void {
     req.logout(() => undefined);
   }

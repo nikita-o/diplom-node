@@ -7,6 +7,7 @@ import {
   Put,
   Query,
   UploadedFiles,
+  UseGuards,
 } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import { HotelRoomService } from './hotel-room.service';
@@ -17,9 +18,16 @@ import { GetHotelsDto } from './dto/get-hotels.dto';
 import { UpdateHotelDto } from './dto/updateHotel.dto';
 import { AddRoomDto } from './dto/add-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { ERole } from '../../common/enums/role.enum';
+import { AuthenticatedGuard } from '../../auth/guards/auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { ApiTags } from '@nestjs/swagger';
 
-// TODO: Потом роли добавить
+@ApiTags('hotels')
 @Controller('admin')
+@Roles(ERole.Admin)
+@UseGuards(AuthenticatedGuard, RolesGuard)
 export class AdminController {
   constructor(
     private hotelService: HotelService,

@@ -7,6 +7,8 @@ import {
   HotelRoom,
   HotelRoomSchema,
 } from '../../database/schemas/hotel-room.schema';
+import { AdminController } from './admin.controller';
+import { CommonController } from './common.controller';
 
 @Module({
   imports: [
@@ -16,5 +18,6 @@ import {
     ]),
   ],
   providers: [HotelService, HotelRoomService],
+  controllers: [AdminController, CommonController],
 })
 export class HotelModule {}

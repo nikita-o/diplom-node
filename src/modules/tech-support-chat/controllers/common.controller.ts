@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { Message } from '../../../database/schemas/message.schema';
 import { SupportRequestService } from '../services/support-request.service';
@@ -15,9 +16,16 @@ import { ReadMessageDto } from '../dto/read.message.dto';
 import { ERole } from '../../../common/enums/role.enum';
 import { SupportRequestClientService } from '../services/support-request-client.service';
 import { SupportRequestEmployeeService } from '../services/support-request-employee.service';
+import { Roles } from '../../../common/decorators/roles.decorator';
+import { AuthenticatedGuard } from '../../../auth/guards/auth.guard';
+import { RolesGuard } from '../../../auth/guards/roles.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('support-requests')
 @Controller('common/support-requests')
-export class ClientController {
+@Roles(ERole.Client, ERole.Manager)
+@UseGuards(AuthenticatedGuard, RolesGuard)
+export class CommonController {
   constructor(
     private supportRequestService: SupportRequestService,
     private supportRequestClientService: SupportRequestClientService,

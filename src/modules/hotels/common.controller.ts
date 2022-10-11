@@ -4,8 +4,9 @@ import { HotelRoom } from '../../database/schemas/hotel-room.schema';
 import { SearchRoomsDto } from './dto/search-rooms.dto';
 import { ReqUser } from '../../common/decorators/req-user.decorator';
 import { User } from '../../database/schemas/user.schema';
+import { ApiTags } from '@nestjs/swagger';
 
-// TODO: Потом роли добавить
+@ApiTags('hotels')
 @Controller('common/hotel-rooms')
 export class CommonController {
   constructor(private hotelRoomService: HotelRoomService) {}

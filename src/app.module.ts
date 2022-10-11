@@ -4,6 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { config } from './configs';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { HotelModule } from './modules/hotels/hotel.module';
+import { ReservationModule } from './modules/reservation/reservation.module';
+import { TechSupportChatModule } from './modules/tech-support-chat/tech-support-chat.module';
 
 @Module({
   imports: [
@@ -11,6 +15,10 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRoot('mongodb://localhost/nest'),
     // my modules:
     AuthModule,
+    HotelModule,
+    ReservationModule,
+    TechSupportChatModule,
+    UserModule,
     // globals:
     CommonModule,
   ],
