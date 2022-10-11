@@ -12,6 +12,8 @@ import {
 import { IMarkMessagesAsRead } from '../interfaces/mark-messages-as-read.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { GetListSupportRequestDto } from '../dto/get-list-support-request.dto';
+import { User } from '../../../database/schemas/user.schema';
 
 @Injectable()
 export class SupportRequestClientService
@@ -67,5 +69,16 @@ export class SupportRequestClientService
         await message.save();
       }
     }
+  }
+
+  getListSupportRequest(
+    data: GetListSupportRequestDto,
+    user: User,
+  ): Promise<SupportRequest[]> {
+    return this.supportRequestModel
+      .find({ user: user, isActive: data.isActive })
+      .skip(data.offset)
+      .limit(data.limit)
+      .exec();
   }
 }

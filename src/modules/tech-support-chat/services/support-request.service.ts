@@ -13,6 +13,8 @@ import { ISendMessage } from '../interfaces/send-message.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EventEmitter } from 'events';
+import { User } from '../../../database/schemas/user.schema';
+import { ERole } from '../../../common/enums/role.enum';
 
 @Injectable()
 export class SupportRequestService implements ISupportRequestService {
@@ -34,12 +36,15 @@ export class SupportRequestService implements ISupportRequestService {
       .exec();
   }
 
-  async getMessages(supportRequestId: string): Promise<Message[]> {
+  async getMessages(supportRequestId: string, user: User): Promise<Message[]> {
     const supportRequest: SupportRequest | null = await this.supportRequestModel
       .findById(supportRequestId)
       .exec();
     if (!supportRequest) {
       throw new BadRequestException('No supportRequest');
+    }
+    if (user.role === ERole.Client && supportRequest.user === user) {
+      throw new BadRequestException();
     }
     return supportRequest.messages;
   }

@@ -11,6 +11,8 @@ import {
   SupportRequestDocument,
 } from '../../../database/schemas/support-request.schema';
 import { Model } from 'mongoose';
+import { GetListSupportRequestDto } from '../dto/get-list-support-request.dto';
+import { User } from '../../../database/schemas/user.schema';
 
 @Injectable()
 export class SupportRequestEmployeeService
@@ -56,5 +58,16 @@ export class SupportRequestEmployeeService
         await message.save();
       }
     }
+  }
+
+  getListSupportRequest(
+    data: GetListSupportRequestDto,
+    user: User,
+  ): Promise<SupportRequest[]> {
+    return this.supportRequestModel
+      .find({ user: user, isActive: data.isActive })
+      .skip(data.offset)
+      .limit(data.limit)
+      .exec();
   }
 }
