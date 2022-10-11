@@ -1,7 +1,8 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import session from 'express-session';
+import * as session from 'express-session';
+import * as passport from 'passport';
 
 export function middlewares(app: INestApplication): INestApplication {
   app.setGlobalPrefix('api');
@@ -18,8 +19,9 @@ export function middlewares(app: INestApplication): INestApplication {
       secret: 'my-secret',
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: true },
     }),
   );
+  app.use(passport.initialize());
+  app.use(passport.session());
   return app;
 }

@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../database/schemas/user.schema';
 import { Model } from 'mongoose';
 import { UtilService } from '../common/utils/util.service';
+import { UserSignDto } from './dto/user-sign.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,15 +20,29 @@ export class AuthService {
     private util: UtilService,
   ) {}
 
-  async register(data: RegisterDto | any) {
+  async login(data: UserSignDto): Promise<Omit<User, 'passwordHash'>> {
+    const user: Partial<User> | null = await this.userModel
+      .findOne({ email: data.email })
+      .exec();
+    if (!user || user.passwordHash !== this.util.getHash(data.password)) {
+      throw new UnauthorizedException();
+    }
+    delete user.passwordHash;
+    return user as Omit<User, 'passwordHash'>;
+  }
+
+  async register(data: RegisterDto) {
     const user: User | null = await this.userModel
       .findOne({ email: data.email })
       .exec();
     if (user) {
       throw new BadRequestException('Email!');
     }
-    data.passwordHash = this.util.getHash(data.password);
-    delete data.password;
-    return this.userModel.create({ data });
+    return this.userModel.create({
+      email: data.email,
+      name: data.name,
+      contactPhone: data.contactPhone,
+      passwordHash: this.util.getHash(data.password),
+    });
   }
 }

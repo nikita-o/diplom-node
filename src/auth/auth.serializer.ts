@@ -11,12 +11,17 @@ export class AuthSerializer extends PassportSerializer {
   }
 
   serializeUser(user: UserDocument, done: Function): any {
-    process.nextTick(() => done(null, user.id));
+    process.nextTick(() => {
+      console.log(666);
+      return done(null, user.id);
+    });
   }
 
   deserializeUser(id: string, done: Function): any {
+    console.log(123);
     this.userModel
       .findById(id)
+      .select(['-passwordHash'])
       .exec()
       .then((user) => done(null, user))
       .catch((error) => done(error));

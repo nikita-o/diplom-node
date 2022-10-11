@@ -6,7 +6,7 @@ export function swagger(app: INestApplication): INestApplication {
     .setTitle('API')
     .setDescription('')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth('optional-session-id')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api_doc', app, document);
