@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { HotelModule } from './modules/hotels/hotel.module';
 import { ReservationModule } from './modules/reservation/reservation.module';
 import { TechSupportChatModule } from './modules/tech-support-chat/tech-support-chat.module';
+import { TestModule } from './modules/test/test.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TechSupportChatModule } from './modules/tech-support-chat/tech-support-
     ReservationModule,
     TechSupportChatModule,
     UserModule,
+    TestModule,
     // globals:
     CommonModule,
   ],
