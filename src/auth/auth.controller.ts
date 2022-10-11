@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ReqUser } from '../common/decorators/req-user.decorator';
-import { User } from '../database/schemas/user.schema';
+import { User, UserDocument } from '../database/schemas/user.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LocalLoginGuard } from './guards/local-login.guard';
 import { AuthenticatedGuard } from './guards/auth.guard';
@@ -12,13 +12,19 @@ export class AuthController {
 
   @Post('auth/login')
   @UseGuards(LocalLoginGuard)
-  async login(@ReqUser() user: User, @Req() req: any): Promise<User> {
-    return user;
+  async login(
+    @ReqUser() user: User,
+  ): Promise<Pick<User, 'email' | 'name' | 'contactPhone'>> {
+    return {
+      email: user.email,
+      name: user.name,
+      contactPhone: user.contactPhone,
+    };
   }
 
   @Post('auth/logout')
   logout(@Req() req: any): void {
-    req.logout();
+    req.logout(() => undefined);
   }
 
   @Get('auth/check')
@@ -28,7 +34,9 @@ export class AuthController {
   }
 
   @Post('client/register')
-  async register(@Body() data: RegisterDto): Promise<User> {
+  async register(
+    @Body() data: RegisterDto,
+  ): Promise<Pick<UserDocument, 'id' | 'email' | 'name'>> {
     return await this.authService.register(data);
   }
 }

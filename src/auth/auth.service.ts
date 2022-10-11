@@ -31,18 +31,26 @@ export class AuthService {
     return user as Omit<User, 'passwordHash'>;
   }
 
-  async register(data: RegisterDto) {
+  async register(
+    data: RegisterDto,
+  ): Promise<Pick<UserDocument, 'id' | 'email' | 'name'>> {
     const user: User | null = await this.userModel
       .findOne({ email: data.email })
       .exec();
     if (user) {
       throw new BadRequestException('Email!');
     }
-    return this.userModel.create({
-      email: data.email,
-      name: data.name,
-      contactPhone: data.contactPhone,
-      passwordHash: this.util.getHash(data.password),
-    });
+    return this.userModel
+      .create({
+        email: data.email,
+        name: data.name,
+        contactPhone: data.contactPhone,
+        passwordHash: this.util.getHash(data.password),
+      })
+      .then((user: UserDocument) => ({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      }));
   }
 }
