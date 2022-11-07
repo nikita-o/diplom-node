@@ -5,6 +5,7 @@ import { SearchRoomsDto } from './dto/search-rooms.dto';
 import { ReqUser } from '../../common/decorators/req-user.decorator';
 import { User } from '../../database/schemas/user.schema';
 import { ApiTags } from '@nestjs/swagger';
+import { ERole } from '../../common/enums/role.enum';
 
 @ApiTags('hotels')
 @Controller('common/hotel-rooms')
@@ -20,7 +21,7 @@ export class CommonController {
       limit: data.limit,
       offset: data.offset,
       title: data.hotel,
-      isEnabled: !!user,
+      isEnabled: user?.role === ERole.Client,
     });
   }
 
@@ -29,6 +30,9 @@ export class CommonController {
     @Param('id') id: string,
     @ReqUser() user: User,
   ): Promise<HotelRoom> {
-    return await this.hotelRoomService.findById(id, !!user);
+    return await this.hotelRoomService.findById(
+      id,
+      user?.role === ERole.Client,
+    );
   }
 }

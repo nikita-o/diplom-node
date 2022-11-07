@@ -21,14 +21,18 @@ export class AuthService {
   ) {}
 
   async login(data: UserSignDto): Promise<Omit<User, 'passwordHash'>> {
-    const user: Partial<User> | null = await this.userModel
+    const user: User | null = await this.userModel
       .findOne({ email: data.email })
       .exec();
     if (!user || user.passwordHash !== this.util.getHash(data.password)) {
       throw new UnauthorizedException();
     }
-    delete user.passwordHash;
-    return user as Omit<User, 'passwordHash'>;
+    return {
+      email: user.email,
+      name: user.name,
+      contactPhone: user.contactPhone,
+      role: user.role,
+    };
   }
 
   async register(

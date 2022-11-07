@@ -8,9 +8,10 @@ import { AuthenticatedGuard } from '../../auth/guards/auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { ERole } from '../../common/enums/role.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('user')
+@ApiCookieAuth()
 @Controller()
 @UseGuards(AuthenticatedGuard, RolesGuard)
 export class UserController {

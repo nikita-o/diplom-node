@@ -8,9 +8,10 @@ import { Roles } from '../../../common/decorators/roles.decorator';
 import { ERole } from '../../../common/enums/role.enum';
 import { AuthenticatedGuard } from '../../../auth/guards/auth.guard';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('support-requests')
+@ApiCookieAuth()
 @Controller('manager/support-requests')
 @Roles(ERole.Manager)
 @UseGuards(AuthenticatedGuard, RolesGuard)

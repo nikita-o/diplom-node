@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { User, UserDocument } from '../../database/schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { UtilService } from '../../common/utils/util.service';
@@ -34,12 +34,19 @@ export class UserService implements IUserService {
   }
 
   findAll(params: ISearchUserParams): Promise<User[]> {
+    const searchParams: FilterQuery<User> = {};
+    if (params.name) {
+      searchParams.name = params.name;
+    }
+    if (params.email) {
+      searchParams.email = params.email;
+    }
+    if (params.contactPhone) {
+      searchParams.contactPhone = params.contactPhone;
+    }
+
     return this.userModel
-      .find({
-        email: params.email,
-        name: params.name,
-        contactPhone: params.contactPhone,
-      })
+      .find(searchParams)
       .skip(params.offset)
       .limit(params.limit)
       .exec();

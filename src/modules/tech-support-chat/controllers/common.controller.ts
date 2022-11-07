@@ -19,9 +19,10 @@ import { SupportRequestEmployeeService } from '../services/support-request-emplo
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { AuthenticatedGuard } from '../../../auth/guards/auth.guard';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('support-requests')
+@ApiCookieAuth()
 @Controller('common/support-requests')
 @Roles(ERole.Client, ERole.Manager)
 @UseGuards(AuthenticatedGuard, RolesGuard)

@@ -5,7 +5,8 @@ import { User, UserDocument } from '../database/schemas/user.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LocalLoginGuard } from './guards/local-login.guard';
 import { AuthenticatedGuard } from './guards/auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { UserSignDto } from './dto/user-sign.dto';
 
 @ApiTags('auth')
 @Controller()
@@ -14,22 +15,18 @@ export class AuthController {
 
   @Post('auth/login')
   @UseGuards(LocalLoginGuard)
-  async login(
-    @ReqUser() user: User,
-  ): Promise<Pick<User, 'email' | 'name' | 'contactPhone'>> {
-    return {
-      email: user.email,
-      name: user.name,
-      contactPhone: user.contactPhone,
-    };
+  async login(@Body() data: UserSignDto): Promise<Omit<User, 'passwordHash'>> {
+    return await this.authService.login(data);
   }
 
+  @ApiCookieAuth()
   @Post('auth/logout')
   @UseGuards(AuthenticatedGuard)
   logout(@Req() req: any): void {
     req.logout(() => undefined);
   }
 
+  @ApiCookieAuth()
   @Get('auth/check')
   @UseGuards(AuthenticatedGuard)
   test(@ReqUser() user: User): User {

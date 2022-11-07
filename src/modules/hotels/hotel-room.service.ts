@@ -18,9 +18,14 @@ export class HotelRoomService implements IHotelRoomService {
     return this.hotelRoomModel.create(data);
   }
 
-  async findById(id: string, isEnabled?: true): Promise<HotelRoom> {
+  async findById(id: string, isEnabled?: boolean): Promise<HotelRoom> {
+    const params: { _id: string; isEnabled?: boolean } = { _id: id };
+    if (isEnabled) {
+      // Потому что иначе нельзя с mongoose
+      params.isEnabled = true;
+    }
     const hotelRoom: HotelRoom | null = await this.hotelRoomModel
-      .findOne({ id, isEnabled })
+      .findOne(params)
       .exec();
     if (!hotelRoom) {
       throw new BadRequestException('No hotelRoom');
@@ -29,6 +34,10 @@ export class HotelRoomService implements IHotelRoomService {
   }
 
   search(params: ISearchRoomsParams): Promise<HotelRoom[]> {
+    if (!params.isEnabled) {
+      // Потому что иначе нельзя с mongoose
+      delete params.isEnabled;
+    }
     return this.hotelRoomModel
       .find({ isEnabled: params.isEnabled })
       .populate({ path: 'hotel', match: { title: params.title } })
