@@ -9,6 +9,7 @@ import {
 } from '../../database/schemas/hotel-room.schema';
 import { AdminController } from './admin.controller';
 import { CommonController } from './common.controller';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -16,6 +17,9 @@ import { CommonController } from './common.controller';
       { name: Hotel.name, schema: HotelSchema },
       { name: HotelRoom.name, schema: HotelRoomSchema },
     ]),
+    MulterModule.register({
+      dest: './storage',
+    }),
   ],
   providers: [HotelService, HotelRoomService],
   controllers: [AdminController, CommonController],

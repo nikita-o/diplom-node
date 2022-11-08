@@ -2,12 +2,15 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Post,
   Put,
   Query,
   UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import { HotelRoomService } from './hotel-room.service';
@@ -22,7 +25,8 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { ERole } from '../../common/enums/role.enum';
 import { AuthenticatedGuard } from '../../auth/guards/auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('hotels')
 @ApiCookieAuth()
@@ -54,12 +58,33 @@ export class AdminController {
     return await this.hotelService.updateHotel(id, data);
   }
 
-  // FIXME: файлы
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        description: { type: 'string' },
+        hotelId: { type: 'string' },
+        photos: { type: 'array', items: { type: 'string', format: 'binary' } },
+      },
+    },
+  })
   @Post('hotel-rooms')
+  @UseInterceptors(FileInterceptor('photos'))
   async addRoom(
-    @UploadedFiles() photos: Express.Multer.File[],
+    @UploadedFiles(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({ fileType: 'jpeg' })
+        .addMaxSizeValidator({ maxSize: 1000 })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    photos: Express.Multer.File[],
     @Body() data: AddRoomDto,
   ): Promise<HotelRoom> {
+    console.log(photos);
     return await this.hotelRoomService.create({
       description: data.description,
       hotel: data.hotelId as unknown as Hotel, // FIXME: кринж
@@ -67,11 +92,31 @@ export class AdminController {
     });
   }
 
-  // FIXME: файлы
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        description: { type: 'string' },
+        hotelId: { type: 'string' },
+        isEnabled: { type: 'boolean' },
+        photos: { type: 'array', items: { type: 'string', format: 'binary' } },
+      },
+    },
+  })
   @Post('hotel-rooms/:id')
   async updateRoom(
     @Param('id') id: string,
-    @UploadedFiles() photos: Express.Multer.File[],
+    @UploadedFiles(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({ fileType: 'jpeg' })
+        .addMaxSizeValidator({ maxSize: 1000 })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    photos: Express.Multer.File[],
     @Body() data: UpdateRoomDto,
   ): Promise<HotelRoom> {
     return await this.hotelRoomService.update(id, {
